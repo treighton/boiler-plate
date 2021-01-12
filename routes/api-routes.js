@@ -3,6 +3,7 @@ const db = require("../models");
 const passport = require("../config/passport");
 
 module.exports = function(app) {
+  const un_used_var = 'im a string';
   // Using the passport.authenticate middleware with our local strategy.
   // If the user has valid login credentials, send them to the members page.
   // Otherwise the user will be sent an error
