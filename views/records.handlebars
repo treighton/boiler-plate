@@ -1,0 +1,58 @@
+  <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/logout">
+        Logout
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="jumbotron">
+    <div class="container">
+        <h1 class="text-center">{{user.name}}'s Records</h1>
+    </div>
+    <div class="container">
+
+      {{#each records}}
+        <div class="record">
+          <h2>{{dataValues.date}}</h2>
+          <ul>
+            <li>Eggs Collected: {{dataValues.eggs}}</li>
+            <li>Feed: {{dataValues.feed}}lbs</li>
+            <li>Mortalify Count: {{dataValues.mortality}}</li>
+            <li>Moved: {{dataValues.moved}}</li>
+            <li>Notes: {{dataValues.notes}}</li>
+          </ul>
+        </div>
+      {{/each}}
+    </div>
+
+    <form action="/records" method="post">
+        <div class="form-group">
+            <label for="date">Date</label>
+            <input type="text" class="form-control"  placeholder="date" name='date'>
+        </div>
+        <div class="form-group">
+            <label for="eggs">eggs</label>
+            <input type="number" class="form-control" name="eggs">
+        </div>
+        <div class="form-group">
+            <label for="feed">feed</label>
+            <input type="number" class="form-control" name="feed">
+        </div>
+        <div class="form-group">
+            <label for="mortality">mortality</label>
+            <input type="number" class="form-control" name="mortality">
+        </div>
+        <div class="form-group">
+            <label for="moved">moved</label>
+            <input type="checkbox" class="form-control" name="moved">
+        </div>
+        <div class="form-group">
+            <label for="notes">notes</label>
+            <input type="text" class="form-control"  placeholder="Notes" name='notes'>
+        </div>
+        <input type="submit">
+    </form>
+</div>
