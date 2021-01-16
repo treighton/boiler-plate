@@ -1,5 +1,6 @@
 // Requiring our custom middleware for checking if a user is logged in
-const isAuthenticated = require("../config/middleware/isAuthenticated");
+const passport = require("../config/passport");
+const jwt = require("jsonwebtoken")
 
 module.exports = function(app) {
   app.get("/", (req, res) => {
@@ -20,7 +21,7 @@ module.exports = function(app) {
 
   // Here we've add our isAuthenticated middleware to this route.
   // If a user who is not logged in tries to access this route they will be redirected to the signup page
-  app.get("/members", isAuthenticated, (req, res) => {
+  app.get("/members", passport.authenticate('jwt', { session: false }), (req, res) => {
     res.render("members", req.user);
   });
 };

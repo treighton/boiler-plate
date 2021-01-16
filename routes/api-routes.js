@@ -1,17 +1,42 @@
 // Requiring our models and passport as we've configured it
 const db = require("../models");
 const passport = require("../config/passport");
+const jwt = require("jsonwebtoken")
 
 module.exports = function(app) {
   // Using the passport.authenticate middleware with our local strategy.
   // If the user has valid login credentials, send them to the members page.
   // Otherwise the user will be sent an error
-  app.post("/api/login", passport.authenticate("local"), (req, res) => {
-    // Sending back a password, even a hashed password, isn't a good idea
-    res.json({
-      email: req.user.email,
-      id: req.user.id
-    });
+  app.post("/api/login", async (req, res, next) => {
+    passport.authenticate(
+      'login',
+      async (err, user, info) => {
+        try {
+          if (err || !user) {
+            const error = new Error('An error occurred.');
+
+            return next(error);
+          }
+          console.log(info)
+          req.login(
+            user,
+            { session: false },
+            async (error) => {
+              if (error){
+                return next(error);
+              } 
+
+              const body = { _id: user._id, email: user.email };
+              const token = jwt.sign({ user: body }, 'TOP_SECRET');
+
+              return res.json({ token });
+            }
+          );
+        } catch (error) {
+          return next(error);
+        }
+      }
+    )(req, res, next);
   });
 
   // Route for signing up a user. The user's password is automatically hashed and stored securely thanks to
@@ -38,17 +63,12 @@ module.exports = function(app) {
   });
 
   // Route for getting some data about our user to be used client side
-  app.get("/api/user_data", (req, res) => {
-    if (!req.user) {
-      // The user is not logged in, send back an empty object
-      res.json({});
-    } else {
-      // Otherwise send back the user's email and id
-      // Sending back a password, even a hashed password, isn't a good idea
+  app.get("/api/user_data", passport.authenticate('jwt', { session: false }), (req, res) => {
+
       res.json({
         email: req.user.email,
         id: req.user.id
       });
-    }
+
   });
 };
